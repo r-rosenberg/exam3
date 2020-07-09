@@ -9,3 +9,124 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Question 1
+```{r}
+
+```
+
+
+## Question 2
+```{r}
+
+```
+
+## Question 3
+```{r}
+
+```
+
+
+## Question 4
+```{r}
+
+```
+
+
+## Question 5
+```{r}
+
+```
+
+
+## Question 6
+```{r}
+
+```
+
+
+## Question 7
+```{r}
+
+```
+
+
+## Question 8
+```{r}
+
+```
+
+
+## Question 9
+```{r}
+
+```
+
+
+## Question 10
+```{r}
+
+```
+
+
+## Question 11
+```{r}
+
+```
+
+
+## Question 12
+```{r}
+
+```
+
+
+## Question 13
+```{r}
+
+```
+
+
+## Question 14
+```{r}
+
+```
+
+
+## Question 15
+```{r}
+
+```
+
+
+## Question 16
+```{r}
+
+```
+
+
+## Question 17
+```{r}
+
+```
+
+
+## Question 18
+```{r}
+
+```
+
+
+## Question 19
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
