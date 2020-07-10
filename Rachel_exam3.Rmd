@@ -11,30 +11,109 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Question 1
 ```{r}
-
+# Clear the environment
+setwd("/Users/racheleryn/Documents/Git/Exam3")
+rm(list=ls(all=TRUE))
 ```
 
 
 ## Question 2
-```{r}
+```{r, eval = FALSE}
+census_api_key("236649386154ffae2bf7f7d4ae50812495e98001", install = TRUE,
+overwrite = TRUE)
+```
+
+```{r, eval = FALSE}
+library(tidycensus) 
+census_api_key("236649386154ffae2bf7f7d4ae50812495e98001", install = TRUE,
+overwrite = TRUE)
+
+#State-level GINI for 2010 and 2015 from ACS
+v10 = load_variables(year = 2010, "acs1")
+
+v15 <- load_variables(year = 2015,
+                      "acs5")
+View(v15)
+View(v10)
+
+#GINI data for 2010
+GINI_10 = get_acs(geography = "county", variables = c(gini = c("B19083_001")))
+
+#GINI data for 2015 
+GINI_15 = get_acs(geography = "county", variables = c(gini = c("B19083_001")))
+
+#Rename "estimate"
+library(data.table)
+setnames(GINI_10, "estimate", "gini")
+names(GINI_10)
+
+library(data.table)
+setnames(GINI_15, "estimate", "gini")
+names(GINI_15)
+
+#Rename "Name"
+library(data.table)
+setnames(GINI_10, "NAME", "state")
+names(GINI_10)
+
+library(data.table)
+setnames(GINI_15, "NAME", "state")
+names(GINI_15)
+
+#Add the variables to the data frames using the dplyr package
+year10 = 2010
+year15 = 2015
+
+library(dplyr)
+GINI_10 = mutate(GINI_10,year10) 
+GINI_15 = mutate(GINI_15,year15)
+
+#Rename the variables using the dplyr package
+GINI_10 = GINI_10 %>% rename(year = year10) 
+GINI_15 = GINI_15 %>% rename(year = year15)
+
+#Check that the changes went through 
+colnames(GINI_10) 
+colnames(GINI_15)
+
+#Create a panel data set
+library(tidyverse)
+inequality_panel = bind_rows(GINI_10,GINI_15)
+
+#The final product
+head(inequality_panel)
 
 ```
 
 ## Question 3
-```{r}
-
+```{r, eval = FALSE}
+#Reshape the data wide
+inequality_wide =
+  inequality_panel %>%
+  pivot_wider(id_cols = c("year","gini", "state", "GEOID"),
+              names_from = "year",
+              values_from = "year")
+head(inequality_wide)
 ```
 
 
 ## Question 4
-```{r}
-
+```{r, eval = FALSE}
+#Reshape the data long
+inequality_long =
+  inequality_wide %>%
+  pivot_longer(cols = starts_with("year"),
+    names_to= "year",
+    values_to = "year",
+    values_drop_na = FALSE) %>%
+  filter(!(year==0))
 ```
 
 
 ## Question 5
-```{r}
-
+```{r, eval = FALSE}
+dim(inequality_long)
+dim(inequality_panel)
 ```
 
 
@@ -52,7 +131,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Question 8
 ```{r}
-
+library(WDI)
+gdp_current = WDI(country = "all", indicator = c("NY.GDP.MKTP.CD"), start = 2006, end = 2007) 
 ```
 
 
@@ -64,25 +144,42 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Question 10
 ```{r}
-
+#The three components are the user interface, server, and execute command. 
 ```
 
 
 ## Question 11
 ```{r}
+#Pull Armenia PDF
+library(pdftools)
+library(tidyr) 
+library(tidytext) 
+library(dplyr) 
+library(stringr) 
+library(ggplot2)
+mytext=pdf_text(pdf = "https://pdf.usaid.gov/pdf_docs/PA00TNMG.pdf")
 
 ```
 
 
 ## Question 12
 ```{r}
-
+#Make a data frame 
+armeniatext=as.data.frame(mytext)
+mytext$page=c(1:65)
+colnames(armeniatext)[which(names(mytext) == "mytext")] <- "text" #change column name
 ```
 
 
 ## Question 13
-```{r}
+```{r, eval = FALSE}
+#Tokenize text and remove stop words
+armeniatext=armeniatext %>% 
+  unnest_tokens(word, text)
 
+data(stop_words)
+armeniatext <- armeniatext %>% 
+  anti_join(stop_words)
 ```
 
 
@@ -93,14 +190,21 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Question 15
-```{r}
-
+```{r, eval = FALSE}
+#Capture webpage
+#Capture the website information/read in the webpage
+hot100page <- "https://www.billboard.com/charts/hot-100" 
+hot100exam <- read_html(hot100page)
 ```
 
 
 ## Question 16
-```{r}
-
+```{r, eval = FALSE}
+#Identify nodes in webpage
+body_nodes <- hot100exam %>% 
+  html_node("body") %>% 
+  html_children()
+body_nodes
 ```
 
 
